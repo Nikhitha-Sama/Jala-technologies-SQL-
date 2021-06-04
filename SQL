@@ -1,0 +1,84 @@
+1) SELECT c.cname,o.onum FROM Customers c,Orders o WHERE c.cnum=o.cnum AND c.cname="Cisneros";
+
+2)SELECT c.cname,o.amount FROM customers c,orders o WHERE c.cnum=o.cnum AND amount>(select avg(amount) as amount FROM orders) ORDER BY c.cnum; 
+
+3)SELECT COALESCE(Id / NULLIF(Id,0), "Rest Of Code") FROM NAMES 
+
+4)SELECT sum(amount) FROM orders GROUP BY cnum HAVING sum(amount)>(SELECT max(amount) FROM orders);
+
+5) select CustomerId from Orders where month(OrderDate)=10;
+
+6)select salesmanid from salesman s where (select count (*) from customers where salesmanid=s.salesmanid)>1;
+
+7)select salesmanid from salesman s where earned in (select sum(amount) from orders o,salesman s where o.salesmanid=s.salesmanid group by s.salesmanid)  group by salesmanid;
+
+8)SELECT * FROM orders WHERE amount > (SELECT AVG(amount) FROM orders);
+
+9)select orderdate,sum(amount) from orders a group by orderdate having sum(amount)>(select max(amount)+2000.0 from orders b where a.orderdate=b.orderdate);
+
+10)select cnum,cname from Customers where rating=(select max(rating) from Customers);
+
+11)Corelated Query : select a.salesmanid,a.city,b.cname,b.city as cus_city from salesman a,customers b where a.salesmanid!=b.salesmanid and a.city=b.city;
+Join : select a.salesmanid,a.city,b.cname,b.city as cus_city from salesman a join customers b using(city) where a.salesmanid!=b.salesmanid;
+
+12)select cnum,cname,city from Customers where Exists(Select * From Customers where city="San Jose");
+
+13)select salesmanid from salesman s where (select count (*) from customers where salesmanid=s.salesmanid)>1;
+
+14)select salesmanid,sname,city from  salesman s where (select count(*) from customers c where c.salesmanid=s.salesmanid)>1;
+
+15)select salesmanid,sname,city from  salesman s where (select count(*) from customers c where c.salesmanid=s.salesmanid)=1;
+
+16)select * from  salesman s where (select count(*) from orders c where c.salesmanid=s.salesmanid)>1;
+
+17)select salesmanid,sname,city from  salesman s where exists(select rating from customers c where c.rating=300 and c.salesmanid=s.salesmanid);
+
+18)select s.salesmanid,s.sname,s.city from  salesman s join customers c using(salesmanid) where c.rating=300;
+
+19)select a.salesmanid,a.city,b.cname,b.city as cus_city from salesman a,customers b where exists(select * from salesman,customers where a.salesmanid!=b.salesmanid and a.city=b.city);
+
+20)select a.sname,c.orderid from salesman a, customers b,orders c where (select count(*) from salesman,customers,orders where a.salesmanid=b.salesmanid and b.cnum=c.cnum )>1 ;   
+
+21)Using EXISTS : select * from salesman s join customers c using(salesmanid) where exists(select * from customers where c.city=s.city);
+Using IN : select * from salesman s join customers c using(salesmanid) where s.city in (select c.city from customers);
+
+22)Using EXISTS : select salesmanid,sname from salesman s where exists(select salesmanid from customers c where c.salesmanid=s.salesmanid) order by sname;
+Using ANY : select salesmanid,sname from salesman s where salesmanid=ANY(select salesmanid from customers c) order by sname;
+
+23)select * from customers where rating>(select max(rating) from customers where city='Rome');
+
+24)SELECT * FROM Orders WHERE amount > ANY(SELECT amount FROM orders WHERE  orderdate='2012/10/06');
+
+25)SELECT * FROM orders WHERE amount < ANY(SELECT amount FROM orders a, customers b WHERE  a.cnum=b.cnum AND b.city='San Jose') group by orderid;
+
+26)SELECT * FROM customers WHERE rating > ALL (SELECT rating FROM customers WHERE city='Paris');
+
+27)select * from customers where rating>=200;
+
+28)USING ANY : select a.salesmanid,a.city from salesman a,customers b where a.salesmanid = Any (select a.salesmanid from salesman,customers where a.salesmanid=b.salesmanid and a.city!=b.city) group by a.salesmanid; 
+USING ALL : select a.salesmanid,a.city from salesman a,customers b where a.salesmanid = Any (select a.salesmanid from salesman,customers where a.salesmanid=b.salesmanid and a.city!=b.city or a.city=null) group by a.salesmanid;
+
+29)SELECT * FROM orders WHERE amount < ANY (SELECT amount FROM orders a, customers b WHERE  a.cnum=b.cnum AND b.city='London');
+
+30)SELECT salesmanid,sname FROM salesman WHERE city='London' UNION SELECT cnum ,cname FROM customers WHERE city='London';
+
+31)SELECT a.salesmanid, sname, orderid,orderdate FROM salesman s, orders s
+WHERE s.salesmanid =o.salesmanid AND o.amount=(SELECT MAX (amount) FROM orders c WHERE c.orderdate = o.orderdate) UNION
+SELECT s.salesmanid, sname, orderid,orderdate FROM salesman s, orders o WHERE s.salesmanid =o.salesmanid
+AND o.amount= (SELECT MIN (amount) FROM orders c WHERE c.orderdate = o.orderdate)
+
+32)SELECT s.salesmanid, sname, cname FROM salesman s, customers c WHERE s.city = c.city UNION SELECT s.salesmanid, sname, 'NONE' FROM salesman s,customers c WHERE s.city != c.city ORDER BY 2 DESC;
+
+33)SELECT s.salesmanid, sname, 'Exists' FROM salesman s, customers c WHERE s.city = c.city UNION SELECT s.salesmanid, sname, 'NONE' FROM salesman s,customers c WHERE s.city != c.city ORDER BY 2 DESC;
+
+34)SELECT cnum, city, rating, 'High Rating' FROM customers WHERE rating >= 200 UNION SELECT cnum, city, rating, 'Low Rating' FROM customers WHERE rating < 200;
+
+35)select salesmanid,sname from  salesman s where (select count(*) from orders c where c.salesmanid=s.salesmanid)>1 order by sname;
+
+36)SELECT snum FROM salesman WHERE city='San Jose' UNION SELECT DISTINCT cnum FROM customers WHERE city='San Jose' UNION SELECT salesmanid FROM orders WHERE orderdate LIKE '%-09-03');
+
+37)SELECT salesmanid,sname FROM salesman join customers using(salesmanid) where customers.city='London';
+
+38)SELECT salesmanid,sname FROM salesman join customers using(salesmanid) where customers.city!='London'; 
+
+39)Select salesmanid,cnum from salesman left outer join Customers using(salesmanid) union Select salesmanid,cnum from salesman right outer join Customers using(salesmanid);
